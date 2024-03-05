@@ -1,327 +1,250 @@
-import telebot
-import TelegramBotFunctional
+from TelegramBotNames import *
+from TelegramBotFunctions import *
+from TelegramBotFunctionsHelper import *
+
+from telebot import TeleBot
+from telebot.types import Message, CallbackQuery
 
 
-from time import sleep
+def start_bot(
+        token: str, 
+        to_log: bool = True
+    ) -> None:
+    """
+    Starting bot with your token
 
+    :param token: Your token. Could get in @BotFather.
+    :param to_log: Bool. Printing bot's token and address.
+    """
 
-models_deepface = [
-  "VGG-Face", 
-  "Facenet", 
-  "Facenet512", 
-  "OpenFace", 
-  "DeepFace", 
-  "DeepID", 
-  "ArcFace", 
-  "Dlib", 
-  "SFace",
-]
-detector_backends = [
-    'opencv', 
-    'retinaface',
-    'mtcnn',
-    'ssd',
-    'dlib',
-    'mediapipe',
-    'yolov8'
-]
-object_detection_yolo_models = [
-    'yolov8n.pt',
-    'yolov8s.pt',
-    'yolov8m.pt',
-    'yolov8l.pt',
-    'yolov8x.pt'
-]
+    # init
+    bot = TeleBot(token)
+    storage = {
+        'deepface_analyze': deepface_analyze_models[-1],
+        'detector_backend': detector_backends_models[-1],
+        'object_detection_yolo': object_detection_yolo_models[-1],
+        'segmentation_yolo': segmentation_yolo_models[-1],
+        'first_message': True,
+        'session': False,
+        'image_base': None, # verify
+    }
 
-
-model = models_deepface[-1]
-detector_backend = detector_backends[-1]
-object_detection_yolo = object_detection_yolo_models[-1]
-
-session = False
-first_message = True
-image_base = None
-
-def get_address_bot(token: str = None) -> dict:
-    if token is None:
-        return token
-    
-    bot = telebot.TeleBot(token=token)
-    result = bot.get_me().to_dict()
-
-    return result
-
-def TelegramBotStart(token: str = None) -> None:
-    if token is None:
-        raise 'No token'
-
-    bot = telebot.TeleBot(token=token)
-    
-    markup = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True)
-    buttons = (
-        telebot.types.KeyboardButton("Find faces in a photo🔎"), 
-        telebot.types.KeyboardButton("Verify faces🤓🥸"),
-        telebot.types.KeyboardButton("Analyze face☹️😀"),
-        telebot.types.KeyboardButton("Object detection🕵️"),
-        telebot.types.KeyboardButton("Settings⚙️"),
-    )
-    markup.add(buttons[0], buttons[1], buttons[2])
-    markup.add(buttons[3])
-    markup.add(buttons[4])
-
-    settings_markup = telebot.types.InlineKeyboardMarkup()
-    buttons_settings = (
-        "Detector backend",
-        "Model Neural Network",
-        "Object Detection Yolo Model",
-        "Info",
-    )
-    [settings_markup.add(
-        telebot.types.InlineKeyboardButton(text=button, 
-                                           callback_data=button)
-                                ) for button in buttons_settings]
-    
-    detector_backend_markup = telebot.types.InlineKeyboardMarkup()
-    [detector_backend_markup.add(
-        telebot.types.InlineKeyboardButton(text=detector_backend, 
-                                           callback_data=detector_backend)
-                                ) for detector_backend in detector_backends]
-    
-    model_deepface_markup = telebot.types.InlineKeyboardMarkup()
-    [model_deepface_markup.add(
-        telebot.types.InlineKeyboardButton(text=model, 
-                                           callback_data=model)
-                                ) for model in models_deepface]
-    
-    object_detection_yolo_markup = telebot.types.InlineKeyboardMarkup()
-    [object_detection_yolo_markup.add(
-        telebot.types.InlineKeyboardButton(text=model, 
-                                           callback_data=model)
-                                ) for model in object_detection_yolo_models]
-
-
+    # start/help menu
     @bot.message_handler(commands=['start', 'help'])
-    def start(message: telebot.types.Message):
-        global first_message, session
+    @session_waiter(bot, storage)
+    def start(message: Message):
+        if storage['first_message']:
+            bot.send_animation(message.from_user.id, 'https://media1.tenor.com/m/5hKPyupKGWMAAAAC/robot-hello.gif')
+            bot.send_message(message.from_user.id, f"Hello, {message.from_user.first_name}! I'm BOT that working on YOLOv5, Deepface and Tensorflow!")
 
-        if session:
-            bot.send_message(message.chat.id, "Sorry i couln't do it now. Wait...")
-        else:
-            session = True
-            if first_message:
-                bot.send_video(message.chat.id, 'https://media1.tenor.com/m/5hKPyupKGWMAAAAC/robot-hello.gif')
-                bot.send_message(message.chat.id, f"Hello! I'm BOT that working on YOLOv5, Deepface and Tensorflow!")
+            storage['first_message'] = False
 
-                first_message = False
-                
-            bot.send_message(message.chat.id, f"My functionality are: " + \
-                            "\n1. DeepFace\n\t\t\t\t1. Find faces in a photo;\n\t\t\t\t2. Verify faces several photos;" + \
+        bot.send_message(message.from_user.id, 
+                            "My functionality are: " + \
+                            "\n1. DeepFace\n\t\t\t\t1. Find faces in a photo;\n\t\t\t\t" + \
+                            "2. Verify faces several photos;" + \
                             "\n\t\t\t\t3. Analyze facial emotions;\n" + \
-                            "2. YoloV8\n\t\t\t\t1. Object Detection", 
-                            reply_markup=markup)
-            
-            session = False
+                            "2. YoloV8\n\t\t\t\t1. Object Detection;\n\t\t\t\t" + \
+                            "2. Segmentation;", 
+                        reply_markup=start_menu)
     
-    @bot.message_handler(content_types=['text'])
-    def get_command(message: telebot.types.Message):
-        global session
-        if session:
-            bot.send_message(message.chat.id, "Sorry i couln't do it now. Wait...")
-        else:
-            session = True
-            if message.text == "Find faces in a photo🔎":
-                sent_message = bot.send_message(message.chat.id, 'Send photo')
-                bot.register_next_step_handler(sent_message, TelegramFindFaces)
-            elif message.text == 'Verify faces🤓🥸':
-                sent_message = bot.send_message(message.chat.id, 'Send photo with base face')
-                bot.register_next_step_handler(sent_message, TelegramVerifyFace1)
-            elif message.text == 'Analyze face☹️😀':
-                sent_message = bot.send_message(message.chat.id, 'Send photo')
-                bot.register_next_step_handler(sent_message, TelegramAnalyzeFace)
-            elif message.text == 'Object detection🕵️':
-                sent_message = bot.send_message(message.chat.id, 'Send photo')
-                bot.register_next_step_handler(sent_message, TelegramObjectDetection)
-            elif message.text == 'Settings⚙️':
-                sent_message = bot.send_message(message.chat.id, "Choose what's you wanna change", reply_markup=settings_markup)
-            else:
-                bot.send_message(message.chat.id, "I didn't get it...")
-            session = False
-
 
     # find faces
-    def TelegramFindFaces(message: telebot.types.Message):
-        global session
-        if session:
-            bot.send_message(message.chat.id, "Sorry i couln't do it now. Wait...")
+    @bot.message_handler(func=lambda message: message == "Find faces in a photo🔎")
+    @session_waiter(bot, storage)
+    def get_find_faces(message: Message):
+        sent_message = bot.send_message(message.from_user.id, 'Send photo where you wanna highligth faces')
+        bot.register_next_step_handler(sent_message, find_faces) # to get photo
+
+
+    @session_waiter(bot, storage)
+    def find_faces(message: Message):
+        if message.content_type != 'photo': # exceptions
+            bot.send_message(message.from_user.id, "It isn't photo...")
         else:
-            session = True
-            if message.content_type != 'photo':
-                bot.send_message(message.chat.id, "It isn't photo...")
-            else:
-                TelegramBotFunctional.TelegramFindFacesFunctional(bot, message, detector_backend)
-            session = False
+            telegram_find_face_functional(
+                bot=bot, 
+                message=message,
+                detector_backend=storage['detector_backend']
+            ) # sending result
+
+
+    # verifing faces
+    @bot.message_handler(func=lambda message: message == "Verify faces🤓🥸")
+    @session_waiter(bot, storage)
+    def get_verify_base_image(message: Message):
+        sent_message = bot.send_message(message.from_user.id, 'Send photo with base face')
+        bot.register_next_step_handler(sent_message, get_verify_viryfing_image)
     
 
-    # verify faces
-    def TelegramVerifyFace1(message):
-        global image_base, session
-
-        if session:
-            bot.send_message(message.chat.id, "Sorry i couln't do it now. Wait...")
+    @session_waiter(bot, storage)
+    def get_verify_viryfing_image(message: Message):
+        if message.content_type != 'photo':
+            bot.send_message(message.from_user.id, "It isn't photo...")
         else:
-            session = True
-            if message.content_type != 'photo':
-                bot.send_message(message.chat.id, "It isn't photo...")
-            else:
-                image_base = TelegramBotFunctional.TelegramVerifyFace1(bot, message)
-
-                sent_messange = bot.send_message(message.chat.id, 'Now send photo with verifing face')
-                bot.register_next_step_handler(sent_messange, TelegramVerifyFace2)
-            session = False
+            image_base = get_image_from_message(bot, message)
+            storage['image_base'] = image_base
+            bot.send_message(message.from_user.id, "Got image")
+            sent_message = bot.send_message(message.from_user.id, "Send photo with verifing face")
+            bot.register_next_step_handler(sent_message, verify_faces)
     
-    def TelegramVerifyFace2(message):
-        global image_base, session
 
-        if session:
-            bot.send_message(message.chat.id, "Sorry i couln't do it now. Wait...")
+    @session_waiter(bot, storage)
+    def verify_faces(message: Message):
+        if message.content_type != 'photo': # exception
+            bot.send_message(message.from_user.id, "It isn't photo...")
         else:
-            session = True
-            if message.content_type != 'photo':
-                bot.send_message(message.chat.id, "It isn't photo...")
-            else:
-                TelegramBotFunctional.TelegramVerifyFace2(bot, message, image_base, detector_backend, model)
-            session = False
-
+            telegram_verify_faces_functional(
+                bot=bot, 
+                message=message, 
+                image_base=storage['image_base'], 
+                detector_backend=storage['detector_backend'], 
+                model_name=storage['deepface_analyze']
+            ) # sending result
     
-    # analyze face
-    def TelegramAnalyzeFace(message: telebot.types.Message):
-        global session
-        if session:
-            bot.send_message(message.chat.id, "Sorry i couln't do it now. Wait...")
+
+    # analizing face
+    @bot.message_handler(func=lambda message: message.text == "Analyze face☹️😀")
+    @session_waiter(bot, storage)
+    def get_analyze_face(message: Message):
+        sent_message = bot.send_message(message.from_user.id, 'Send photo with analized face')
+        bot.register_next_step_handler(sent_message, analyze_face)
+
+
+    @session_waiter(bot, storage)
+    def analyze_face(message: Message):
+        if message.content_type != 'photo': # exception
+            bot.send_message(message.from_user.id, "It isn't photo...")
         else:
-            session = True
-            if message.content_type != 'photo':
-                bot.send_message(message.chat.id, "It isn't photo...")
-            else:
-                TelegramBotFunctional.TelegramAnalyzeFace(bot, message, markup, detector_backend)
-            session = False
+            telegram_analyze_face_functional(
+                bot=bot, 
+                message=message, 
+                detector_backend=storage['detector_backend']
+            ) # sending results
+    
 
     # object detection
-    def TelegramObjectDetection(message):
-        global session
-        if session:
-            bot.send_message(message.chat.id, "Sorry i couln't do it now. Wait...")
+    @bot.message_handler(func=lambda message: message.text == "Object detection🕵️")
+    @session_waiter(bot, storage)
+    def get_object_detection(message: Message):
+        sent_message = bot.send_message(message.from_user.id, 'Send photo with objects')
+        bot.register_next_step_handler(sent_message, object_detection)
+
+
+    @session_waiter(bot, storage)
+    def object_detection(message: Message):
+        if message.content_type != 'photo': # exception
+            bot.send_message(message.from_user.id, "It isn't photo...")
         else:
-            session = True
-            if message.content_type != 'photo':
-                bot.send_message(message.chat.id, "It isn't photo...")
-            else:
-                TelegramBotFunctional.TelegramObjectDetection(bot, message, object_detection_yolo)
-
-            session = False
+            telegram_object_detection_functional(
+                bot=bot,
+                message=message, 
+                object_detection_yolo=storage['object_detection_yolo']
+            ) # sending results
     
 
-    # settings
-    @bot.callback_query_handler(func=lambda call: call.data == 'Info')
-    def send_info(call):
-        global session
-        if session:
-            bot.send_message(call.message.chat.id, "Sorry i couln't do it now. Wait...")
+    # segmentation
+    @bot.message_handler(func=lambda message: message.text == 'Segmentation✒️')
+    @session_waiter(bot, storage)
+    def get_segmentation(message: Message):
+        sent_message = bot.send_message(message.from_user.id, 'Send photo with objects')
+        bot.register_next_step_handler(sent_message, segmentation)
+
+
+    @session_waiter(bot, storage)
+    def segmentation(message: Message):
+        if message.content_type != 'photo': # exception
+            bot.send_message(message.from_user.id, "It isn't photo...")
         else:
-            session = True
-            
-            result_msg =  "The bot provides an opportunity to work with neural networks using the libraries YOLOv5, TensorFlow, Keras, Deepface, OpenCV2. Recognition accuracy is ~97%\n\n"
-            result_msg += f'Characteristics:\n'
-            result_msg += f'\t\t\t[+] Model: {model}\n'
-            result_msg += f'\t\t\t[+] Detector_backend: {detector_backend}\n'
-            result_msg += f'\t\t\t[+] Object Detection Model: {object_detection_yolo}'
-
-            bot.send_message(call.message.chat.id, result_msg, reply_markup=markup)
-            session = False
-    
-    # model obj detect yolo name
-    @bot.callback_query_handler(func=lambda call: call.data == "Object Detection Yolo Model")
-    def change_obj_detection_yolo_model(call):
-        global session
-        if session:
-            bot.send_message(call.message.chat.id, "Sorry i couln't do it now. Wait...")
-        else:
-            session = True
-            bot.send_message(call.message.chat.id, 'Choose model you want', reply_markup=object_detection_yolo_markup)
-            session = False
-    
-    @bot.callback_query_handler(func=lambda call: call.data in object_detection_yolo_models)
-    def change_obj_detection_yolo_n(call):
-        global session
-        if session:
-            bot.send_message(call.message.chat.id, "Sorry i couln't do it now. Wait...")
-        else:
-            session = True
-            bot.send_message(call.message.chat.id, 'Changing...')
-
-            global object_detection_yolo
-            object_detection_yolo = call.data
-
-            bot.send_message(call.message.chat.id, f'Changed on {call.data}', reply_markup=markup)
-            session = False
-    
-    
-    # Model name
-    @bot.callback_query_handler(func=lambda call: call.data == 'Model Neural Network')
-    def change_model_nn(call):
-        global session
-        if session:
-            bot.send_message(call.message.chat.id, "Sorry i couln't do it now. Wait...")
-        else:
-            session = True
-            bot.send_message(call.message.chat.id, 'Choose model you want', reply_markup=model_deepface_markup)
-            session = False
-    
-    @bot.callback_query_handler(func=lambda call: call.data in models_deepface)
-    def change_detector_backend_opencv(call):
-        global session
-        if session:
-            bot.send_message(call.message.chat.id, "Sorry i couln't do it now. Wait...")
-        else:
-            session = True
-            bot.send_message(call.message.chat.id, 'Changing...')
-
-            global model
-            model = call.data
-
-            bot.send_message(call.message.chat.id, f'Changed on {call.data}', reply_markup=markup)
-            session = False
+            telegram_segmentation_functional(
+                bot=bot,
+                message=message,
+                segmentation_yolo=storage['segmentation_yolo']
+            ) # sending results
     
 
-    # detector_backend
-    @bot.callback_query_handler(func=lambda call: call.data == 'Detector backend')
-    def change_detector_backend(call):
-        global session
-        if session:
-            bot.send_message(call.message.chat.id, "Sorry i couln't do it now. Wait...")
-        else:
-            session = True
-            bot.send_message(call.message.chat.id, 'Choose detector backend you want', reply_markup=detector_backend_markup)
-            session = False
+    # settings menu
+    @bot.message_handler(func=lambda message: message.text == 'Settings⚙️')
+    @session_waiter(bot, storage)
+    def choose_settings(message: Message):
+        bot.send_message(message.from_user.id, "Choose: ", reply_markup=settings_menu)
+
+
+    # get info
+    @bot.callback_query_handler(func=lambda callback_query: callback_query.data == "Info")
+    @session_waiter(bot, storage)
+    def send_info(callback_query: CallbackQuery):
+        result_msg =  "Info:\n\n"
+        result_msg += 'The bot provides an opportunity to work with people faces through a neural network using the libraries YOLOv5, TensorFlow, Keras, Deepface, OpenCV2. Recognition accuracy is ~97%. <a href="https://github.com/CsgoBotTG/DeepFaceTelegramBot"><b>Github</b></a>\n\n'
+        result_msg += "Characteristics:\n"
+        result_msg += f"\t\t\t[+] <b>Model</b>: {storage['deepface_analyze']}\n"
+        result_msg += f"\t\t\t[+] <b>Detector Backend</b>: {storage['detector_backend']}\n"
+        result_msg += f"\t\t\t[+] <b>Object Detection Model</b>: {storage['object_detection_yolo']}\n"
+        result_msg += f"\t\t\t[+] <b>Segmentation Model</b>: {storage['segmentation_yolo']}"
+        bot.edit_message_text(result_msg, callback_query.message.from_user.id, callback_query.message.id, parse_mode='HTML')
+
+
+    # choose detector backend
+    @bot.callback_query_handler(func=lambda callback_query: callback_query.data == "Detector backend")
+    @session_waiter(bot, storage)
+    def choose_detector_backend(callback_query: CallbackQuery):
+        bot.edit_message_text('Choose: ', callback_query.message.from_user.id, callback_query.message.id, reply_markup=detector_backend_menu)
+
+
+    @bot.callback_query_handler(func=lambda callback_query: callback_query.data in detector_backends_models)
+    @session_waiter(bot, storage)
+    def change_detector_backend(callback_query: CallbackQuery):
+        storage['detector_backend'] = callback_query.data
+        bot.edit_message_text(f"Choosed Detector backend: {storage['detector_backend']}", callback_query.message.from_user.id, callback_query.message.id)
+
+
+    # choose analyze model
+    @bot.callback_query_handler(func=lambda callback_query: callback_query.data == "Model Neural Network for analyze face")
+    @session_waiter(bot, storage)
+    def choose_deepface_analyze(callback_query: CallbackQuery):
+        bot.edit_message_text('Choose: ', callback_query.message.from_user.id, callback_query.message.id, reply_markup=deepface_analyze_menu)
+
+
+    @bot.callback_query_handler(func=lambda callback_query: callback_query.data in deepface_analyze_models)
+    @session_waiter(bot, storage)
+    def change_deepface_analyze(callback_query: CallbackQuery):
+        storage['deepface_analyze'] = callback_query.data
+        bot.edit_message_text(f"Choosed Model Neural Network for analyze face: {storage['deepface_analyze']}", callback_query.message.from_user.id, callback_query.message.id)
+
+
+    # choose object detection
+    @bot.callback_query_handler(func=lambda callback_query: callback_query.data == "Object Detection Yolo Model")
+    @session_waiter(bot, storage)
+    def choose_object_detection_yolo(callback_query: CallbackQuery):
+        bot.edit_message_text('Choose: ', callback_query.message.from_user.id, callback_query.message.id, reply_markup=object_detection_yolo_menu)
+
+
+    @bot.callback_query_handler(func=lambda callback_query: callback_query.data in object_detection_yolo_models)
+    @session_waiter(bot, storage)
+    def change_object_detection_yolo(callback_query: CallbackQuery):
+        storage['object_detection_yolo'] = callback_query.data
+        bot.edit_message_text(f"Choosed Object Detection Yolo Model: {storage['object_detection_yolo']}", callback_query.message.from_user.id, callback_query.message.id)
     
-    @bot.callback_query_handler(func=lambda call: call.data in detector_backends)
-    def change_detector_backend_opencv(call):
-        global session
-        if session:
-            bot.send_message(call.message.chat.id, "Sorry i couln't do it now. Wait...")
-        else:
-            session = True
-            bot.send_message(call.message.chat.id, 'Changing...')
 
-            global detector_backend
-            detector_backend = call.data
-
-            bot.send_message(call.message.chat.id, f'Changed on {call.data}', reply_markup=markup)
-            session = False
-    
-    bot.infinity_polling(none_stop=True)
+    # choose segmentation
+    @bot.callback_query_handler(func=lambda callback_query: callback_query.data == "Segmentation Yolo Model")
+    @session_waiter(bot, storage)
+    def choose_segmentation_yolo(callback_query: CallbackQuery):
+        bot.edit_message_text('Choose: ', callback_query.message.from_user.id, callback_query.message.id, reply_markup=segmentation_yolo_menu)
 
 
+    @bot.callback_query_handler(func=lambda callback_query: callback_query.data in segmentation_yolo_models)
+    @session_waiter(bot, storage)
+    def change_segmentation_yolo(callback_query: CallbackQuery):
+        storage['segmentation_yolo'] = callback_query.data
+        bot.edit_message_text(f"Choosed Segmentation Yolo Model: {storage['segmentation_yolo']}", callback_query.message.from_user.id, callback_query.message.id)
 
-if __name__ == '__main__':
-    print(TelegramBotStart(token='6637485467:AAFmS9mSSgTQDf8ZrbQQPapJ4neoCAPzBoo'))
+
+    def main():
+        bot.polling(non_stop=True)
+
+        if to_log:
+            info_bot = bot.get_me().to_json()
+            print(f"Starting bot {info_bot['first_name']} with token {token}. https://t.me/{info_bot['username']} | @{info_bot['username']}")
+        
+    main()

@@ -34,7 +34,7 @@ def session_waiter_with_state(bot: Bot, storage: dict):
     return session_waiter_with_state_wrapper
 
 
-async def get_file_from_message(bot: Bot, message: Message):
+async def get_image_from_message(bot: Bot, message: Message):
     file_id = message.photo[-1].file_id
     file_info = await bot.get_file(file_id)
     file_path = file_info.file_path
@@ -45,7 +45,7 @@ async def get_file_from_message(bot: Bot, message: Message):
     return file
 
 
-def send_file(bot: Bot, message: Message, image: np.ndarray, caption: str = None):
+def send_image(bot: Bot, message: Message, image: np.ndarray, caption: str = None):
     image = cv2.imencode('.jpg', image)[1].tostring()
     
     data = {'chat_id': message.from_user.id}

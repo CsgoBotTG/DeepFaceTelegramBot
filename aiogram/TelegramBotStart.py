@@ -91,7 +91,7 @@ def start_bot(
             await bot.send_message(message.from_user.id, "It isn't photo...")
             await state.clear()
         else:
-            image_base = await get_file_from_message(bot, message) # get image
+            image_base = await get_image_from_message(bot, message) # get image
             await bot.send_message(message.from_user.id, "Got image")
             await state.update_data(image_base=image_base) # update data
             await bot.send_message(message.from_user.id, "Send photo with verifing face")

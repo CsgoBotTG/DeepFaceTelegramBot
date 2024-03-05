@@ -24,7 +24,7 @@ async def telegram_find_face_functional(
     :param detector_backend: str. Used detector backed
     """
 
-    image = await get_file_from_message(bot, message)
+    image = await get_image_from_message(bot, message)
 
     await bot.send_message(message.from_user.id, 'Got image')
     await bot.send_message(message.from_user.id, 'Starting recognition')
@@ -39,10 +39,10 @@ async def telegram_find_face_functional(
         cvzone.putTextRect(image, f'Face {index + 1}', (max(0, x), max(35, y)), scale=0.75, thickness=1, offset=3)
         face_image = image[y:y+h, x:x+w]
 
-        send_file(bot, message, face_image, f'Face {index + 1}')
+        send_image(bot, message, face_image, f'Face {index + 1}')
 
     await bot.send_message(message.from_user.id, 'Highlighting faces...')
-    send_file(bot, message, image)
+    send_image(bot, message, image)
     await bot.send_message(message.from_user.id, f'[+] Detector Backend: {detector_backend}')
 
 
@@ -63,7 +63,7 @@ async def telegram_verify_faces_functional(
     :param model_name: str. Used model of NN analizing face
     """
 
-    image_verify = await get_file_from_message(bot, message)
+    image_verify = await get_image_from_message(bot, message)
 
     await bot.send_message(message.from_user.id, 'Got image')
     await bot.send_message(message.from_user.id, 'Starting recognition...')
@@ -87,8 +87,8 @@ async def telegram_verify_faces_functional(
     cvzone.cornerRect(image_base, (x1, y1, w1, h1), l=9)
     cvzone.cornerRect(image_verify, (x2, y2, w2, h2), l=9)
 
-    send_file(bot, message, image_base, 'Base Image')
-    send_file(bot, message, image_verify, 'Verify Image')
+    send_image(bot, message, image_base, 'Base Image')
+    send_image(bot, message, image_verify, 'Verify Image')
 
 
 async def telegram_analyze_face_functional(
@@ -104,7 +104,7 @@ async def telegram_analyze_face_functional(
     :param detector_backend: str. Used detector_backends
     """
 
-    image = await get_file_from_message(bot, message)
+    image = await get_image_from_message(bot, message)
 
     await bot.send_message(message.from_user.id, 'Got image')
     await bot.send_message(message.from_user.id, 'Starting recognition...')
@@ -136,12 +136,12 @@ async def telegram_analyze_face_functional(
         face_region = analyze['region']
         x, y, w, h = face_region['x'], face_region['y'], face_region['w'], face_region['h']
         face = image[y:y+h, x:x+w]
-        send_file(bot, message, face, f'Face {index + 1}')
+        send_image(bot, message, face, f'Face {index + 1}')
         cvzone.putTextRect(image, f'Face {index + 1}', (max(0, x), max(35, y)), scale=0.75, thickness=1, offset=3)
         cvzone.cornerRect(image, (x, y, w, h), l=9)
     
     await bot.send_message(message.chat.id, 'Highlighting faces...')
-    send_file(bot, message, image, 'Highlitghed')
+    send_image(bot, message, image, 'Highlitghed')
 
 
 async def telegram_object_detection_functional(
@@ -157,7 +157,7 @@ async def telegram_object_detection_functional(
     :param object_detection_yolo: str. Yolov8 object detection model
     """
 
-    image = await get_file_from_message(bot, message)
+    image = await get_image_from_message(bot, message)
 
     await bot.send_message(message.from_user.id, "Got Image")
     await bot.send_message(message.from_user.id, "Starting recognition...")
@@ -169,7 +169,7 @@ async def telegram_object_detection_functional(
 
     await bot.send_message(message.from_user.id, "Finished")
     await bot.send_message(message.from_user.id, "Highligthing image")
-    send_file(bot, message, image, 'Highlitghed Image')
+    send_image(bot, message, image, 'Highlitghed Image')
 
 
 async def telegram_segmentation_functional(
@@ -185,7 +185,7 @@ async def telegram_segmentation_functional(
     :param segmentation_yolo: str. Yolov8 object detection model
     """
 
-    image = await get_file_from_message(bot, message)
+    image = await get_image_from_message(bot, message)
     
     await bot.send_message(message.from_user.id, "Got Image")
     await bot.send_message(message.from_user.id, "Starting recognition...")
@@ -197,4 +197,4 @@ async def telegram_segmentation_functional(
 
     await bot.send_message(message.from_user.id, "Finished")
     await bot.send_message(message.from_user.id, "Highligthing image")
-    send_file(bot, message, image, 'Highlitghed Image')
+    send_image(bot, message, image, 'Highlitghed Image')
