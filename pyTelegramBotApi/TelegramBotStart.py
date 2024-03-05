@@ -101,6 +101,7 @@ def start_bot(
                 detector_backend=storage['detector_backend'], 
                 model_name=storage['deepface_analyze']
             ) # sending result
+        storage['image_base'] = None # clearing
     
 
     # analizing face
