@@ -37,7 +37,7 @@ def start_bot(
     def start(message: Message):
         if storage['first_message']:
             bot.send_animation(message.from_user.id, 'https://media1.tenor.com/m/5hKPyupKGWMAAAAC/robot-hello.gif')
-            bot.send_message(message.from_user.id, f"Hello, {message.from_user.first_name}! I'm BOT that working on YOLOv5, Deepface and Tensorflow!")
+            bot.send_message(message.from_user.id, f"Hello, {message.from_user.first_name}! I'm BOT that working on YOLOv5, Deepface, Tensorflow and pyTelegramBotAPI!")
 
             storage['first_message'] = False
 
@@ -248,7 +248,7 @@ def start_bot(
             info_bot = json.loads(bot.get_me().to_json())
             first_name = info_bot['first_name']
             username = info_bot['username']
-            print(f"Starting bot {first_name} with token {token}. https://t.me/{username} | @{username}")
+            print(f"Starting bot {first_name} with token {token} (pyTelegramBotApi). https://t.me/{username} | @{username}")
 
         bot.infinity_polling()
 

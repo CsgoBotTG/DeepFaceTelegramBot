@@ -40,7 +40,7 @@ def start_bot(
     async def start(message: Message):
         if storage['first_message']:
             await bot.send_animation(message.from_user.id, 'https://media1.tenor.com/m/5hKPyupKGWMAAAAC/robot-hello.gif')
-            await bot.send_message(message.from_user.id, f"Hello, {message.from_user.first_name}! I'm BOT that working on YOLOv5, Deepface and Tensorflow!")
+            await bot.send_message(message.from_user.id, f"Hello, {message.from_user.first_name}! I'm BOT that working on YOLOv5, Deepface, Tensorflow and AIoGram!")
 
             storage['first_message'] = False
 
@@ -263,7 +263,7 @@ def start_bot(
 
         if to_log:
             info_bot = await bot.get_me()
-            print(f"Starting bot {info_bot.first_name} with token {token}. https://t.me/{info_bot.username} | @{info_bot.username}")
+            print(f"Starting bot {info_bot.first_name} with token {token} (aiogram). https://t.me/{info_bot.username} | @{info_bot.username}")
 
         await dp.start_polling(bot)
 
