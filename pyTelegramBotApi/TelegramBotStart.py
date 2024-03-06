@@ -242,12 +242,12 @@ def start_bot(
 
 
     def main():
-        bot.infinity_polling()
-
         if to_log:
             info_bot = bot.get_me().to_json()
             print(f"Starting bot {info_bot['first_name']} with token {token}. https://t.me/{info_bot['username']} | @{info_bot['username']}")
-        
+
+        bot.infinity_polling()
+
     main()
 
 
