@@ -12,7 +12,7 @@ The functions of this bot:
    3. Analyze facial emotions, gender, race, age.
 2. YoloV8
    1. Object detection (persons, animals, cars, food, etc...)
-   2. Segmentation (persons, animals, cars, food, etc...) (only in aiogram)
+   2. Segmentation (persons, animals, cars, food, etc...)
 
 The bot will be controlled using telegram and buttons.
 
