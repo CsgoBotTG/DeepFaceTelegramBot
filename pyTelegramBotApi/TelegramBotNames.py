@@ -1,6 +1,8 @@
 from telebot.types import ReplyKeyboardMarkup, KeyboardButton
 from telebot.util import quick_markup
 
+models_path = r'../../weightsYolo/'
+
 deepface_analyze_models = [
   "VGG-Face", 
   "Facenet", 

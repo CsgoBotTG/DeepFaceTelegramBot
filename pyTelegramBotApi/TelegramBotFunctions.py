@@ -165,7 +165,7 @@ def telegram_object_detection_functional(
     bot.send_message(message.from_user.id, "Got Image")
     bot.send_message(message.from_user.id, "Starting recognition...")
 
-    if not os.path.exists(r'C:/Users/kaira/Documents/GitHub/weightsYolo/' + object_detection_yolo):
+    if not os.path.exists(models_path + object_detection_yolo):
         bot.send_message(message.from_user.id, "Didn't find model. Wait few seconds. Downloading...")
 
     _, image = object_detect_with_highligth(image, object_detection_yolo)                
@@ -195,7 +195,7 @@ def telegram_segmentation_functional(
     bot.send_message(message.from_user.id, "Got Image")
     bot.send_message(message.from_user.id, "Starting recognition...")
 
-    if not os.path.exists('C:/Users/kaira/Documents/GitHub/weightsYolo/' + segmentation_yolo):
+    if not os.path.exists(models_path + segmentation_yolo):
         bot.send_message(message.from_user.id, "Didn't find model. Wait few seconds. Downloading...")
     
     _, image = segmentation_detect_with_higligth(image, segmentation_yolo)

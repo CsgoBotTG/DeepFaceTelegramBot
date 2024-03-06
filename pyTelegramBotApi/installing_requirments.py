@@ -1,9 +1,10 @@
 import os
-import ultralytics
-from deepface import DeepFace
 
 print('requirments')
 os.system('pip install -r ' + '\\'.join([item[::-1] for item in os.path.abspath(__file__)[::-1].split('\\')[1:]][::-1]) + '/requirments.txt')
+
+import ultralytics
+from TelegramBotNames import models_path
 
 print('yolo')
 object_detection_yolo_models = [
@@ -13,8 +14,10 @@ object_detection_yolo_models = [
     'yolov8l.pt',
     'yolov8x.pt',
 ]
-[ultralytics.YOLO('\\'.join([item[::-1] for item in os.path.abspath(__file__)[::-1].split('\\')[1:]][::-1]) + "/weightsYolo/" + model) for model in object_detection_yolo_models]
-[ultralytics.YOLO('\\'.join([item[::-1] for item in os.path.abspath(__file__)[::-1].split('\\')[1:]][::-1]) + "/weightsYolo/" + model.split('.')[0] + '-seg.pt') for model in object_detection_yolo_models]
+[ultralytics.YOLO(models_path + model + '.pt') for model in object_detection_yolo_models]
+[ultralytics.YOLO(models_path + model + '-seg.pt') for model in object_detection_yolo_models]
+
+from deepface import DeepFace
 
 print('deepface')
 models_deepface = [
@@ -37,5 +40,5 @@ detector_backends = [
     'mediapipe',
     'yolov8',
 ]
-[DeepFace.extract_faces('images/Emotion.png', detector_backend=detector_backend) for detector_backend in detector_backends]
-[DeepFace.verify('images/Harry1.jpg', 'images/Harry2.jpg', model_name=model) for model in models_deepface]
+[DeepFace.extract_faces('../images/Emotion.png', detector_backend=detector_backend) for detector_backend in detector_backends]
+[DeepFace.verify('../images/Harry1.jpg', '../images/Harry2.jpg', model_name=model) for model in models_deepface]
