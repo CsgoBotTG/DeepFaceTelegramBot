@@ -4,12 +4,11 @@ import cvzone
 import numpy as np
 import ultralytics
 
+from TelegramBotNames import models_path
 
 def object_detect_with_highligth(
         image: np.ndarray, 
         obj_detect_model: str = "yolov8x.pt",
-        models_path=r'C:\Users\kaira\Documents\GitHub\weightsYolo'
-        #models_path='\\'.join([item[::-1] for item in os.path.abspath(__file__)[::-1].split('\\')[1:]][::-1]) + "/weightsYolo/"
     ) -> None:
     """
     Object detection from image
@@ -44,8 +43,6 @@ def object_detect_with_highligth(
 def segmentation_detect_with_higligth(
         image: np.ndarray,
         segmentation_model: str = "yolov8n-seg.pt",
-        models_path=r'C:\Users\kaira\Documents\GitHub\weightsYolo'
-        #models_path='\\'.join([item[::-1] for item in os.path.abspath(__file__)[::-1].split('\\')[1:]][::-1]) + "/weightsYolo/"
     ):
     """
     Segmentation from image

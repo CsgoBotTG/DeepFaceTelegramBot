@@ -2,11 +2,7 @@ from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, KeyboardBu
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
 
-payload = {'content' : 'pickle rick'}
-headers = {
-    'content-type' : 'application/x-www-form-urlencoded',
-}
-params = {'guestbook_name' : 'main'}
+models_path = r'../../weightsYolo/'
 
 deepface_analyze_models = [
   "VGG-Face", 
