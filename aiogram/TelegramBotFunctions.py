@@ -45,6 +45,8 @@ async def telegram_find_face_functional(
     send_image(bot, message, image)
     await bot.send_message(message.from_user.id, f'[+] Detector Backend: {detector_backend}')
 
+    return None
+
 
 async def telegram_verify_faces_functional(
         bot: Bot, 
@@ -89,6 +91,8 @@ async def telegram_verify_faces_functional(
 
     send_image(bot, message, image_base, 'Base Image')
     send_image(bot, message, image_verify, 'Verify Image')
+
+    return None
 
 
 async def telegram_analyze_face_functional(
@@ -143,6 +147,8 @@ async def telegram_analyze_face_functional(
     await bot.send_message(message.chat.id, 'Highlighting faces...')
     send_image(bot, message, image, 'Highlitghed')
 
+    return None
+
 
 async def telegram_object_detection_functional(
         bot: Bot, 
@@ -171,6 +177,8 @@ async def telegram_object_detection_functional(
     await bot.send_message(message.from_user.id, "Highligthing image")
     send_image(bot, message, image, 'Highlitghed Image')
 
+    return None
+
 
 async def telegram_segmentation_functional(
         bot: Bot,
@@ -198,3 +206,5 @@ async def telegram_segmentation_functional(
     await bot.send_message(message.from_user.id, "Finished")
     await bot.send_message(message.from_user.id, "Highligthing image")
     send_image(bot, message, image, 'Highlitghed Image')
+    
+    return None

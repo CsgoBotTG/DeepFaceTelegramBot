@@ -43,6 +43,8 @@ def telegram_find_face_functional(
     send_image(bot, message, image)
     bot.send_message(message.from_user.id, f'[+] Detector Backend: {detector_backend}')
 
+    return None
+
 
 def telegram_verify_faces_functional(
         bot: TeleBot, 
@@ -86,6 +88,8 @@ def telegram_verify_faces_functional(
 
     send_image(bot, message, image_base, 'Base Image')
     send_image(bot, message, image_verify, 'Verify Image')
+
+    return None
 
 
 def telegram_analyze_face_functional(
@@ -140,6 +144,8 @@ def telegram_analyze_face_functional(
     bot.send_message(message.chat.id, 'Highlighting faces...')
     send_image(bot, message, image, 'Highlitghed')
 
+    return None
+
 
 def telegram_object_detection_functional(
         bot: TeleBot, 
@@ -168,6 +174,8 @@ def telegram_object_detection_functional(
     bot.send_message(message.from_user.id, "Highligthing image")
     send_image(bot, message, image, 'Highlitghed Image')
 
+    return None
+
 
 def telegram_segmentation_functional(
         bot: TeleBot,
@@ -195,3 +203,5 @@ def telegram_segmentation_functional(
     bot.send_message(message.from_user.id, "Finished")
     bot.send_message(message.from_user.id, "Highligthing image")
     send_image(bot, message, image, 'Highlitghed Image')
+
+    return None
