@@ -18,7 +18,7 @@ The bot will be controlled using telegram and buttons.
 
 
 
-# Installation (Windows/Linus/Mac) with <a href="https://github.com/aiogram/aiogram"><u><b>aiogram</b></u></a> or <a href="https://github.com/python-telegram-bot/python-telegram-bot"><u><b>pyTelegramBotApi</b></u></a>
+# Installation (Windows/Linus/Mac) with <a href="https://github.com/aiogram/aiogram"><u><b>aiogram</b></u></a> or <a href="https://github.com/eternnoir/pyTelegramBotAPI"><u><b>pyTelegramBotApi</b></u></a>
 ```shell
 $ git clone https://github.com/CsgoBotTG/DeepFaceTelegramBot.git
 $ cd deepface/aiogram # or cd deepface/pyTelegramBotApi
