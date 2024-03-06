@@ -112,11 +112,9 @@ def telegram_analyze_face_functional(
 
     analyze_faces = analyze_face_in_photo(image, detector_backend)
     for index, analyze in enumerate(analyze_faces):
-        gender = 'Woman' if analyze.get('gender').get('Man') < analyze.get('gender').get('Woman') else 'Man'
-
         result_msg =  f'Face {index + 1}\n'
         result_msg += f'[+] <b>Age</b>: {analyze["age"]}\n'
-        result_msg += f'[+] <b>Gender</b>: {gender}\n'
+        result_msg += f'[+] <b>Gender</b>: {analyze["dominant_gender"]}\n'
         result_msg +=  '[+] <b>Race</b>:\n'
 
         for k, v in analyze.get('race').items():
