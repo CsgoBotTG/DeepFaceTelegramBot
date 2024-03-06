@@ -18,7 +18,7 @@ def session_waiter(
     """
 
     def session_waiter_wrapper(func):
-        async def wrapper(message: Message):
+        def wrapper(message: Message):
             if storage['session']:
                 bot.send_message(message.from_user.id, "Sorry i couln't do it now. Wait...")
             else:

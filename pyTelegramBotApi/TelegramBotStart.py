@@ -242,10 +242,14 @@ def start_bot(
 
 
     def main():
-        bot.polling(non_stop=True)
+        bot.infinity_polling()
 
         if to_log:
             info_bot = bot.get_me().to_json()
             print(f"Starting bot {info_bot['first_name']} with token {token}. https://t.me/{info_bot['username']} | @{info_bot['username']}")
         
     main()
+
+
+if __name__ == '__main__':
+    start_bot("6637485467:AAFmS9mSSgTQDf8ZrbQQPapJ4neoCAPzBoo")
