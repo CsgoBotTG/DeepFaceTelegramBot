@@ -1,3 +1,5 @@
+import json
+
 from TelegramBotNames import *
 from TelegramBotFunctions import *
 from TelegramBotFunctionsHelper import *
@@ -50,7 +52,7 @@ def start_bot(
     
 
     # find faces
-    @bot.message_handler(func=lambda message: message == "Find faces in a photo🔎")
+    @bot.message_handler(func=lambda message: message.text == "Find faces in a photo🔎")
     @session_waiter(bot, storage)
     def get_find_faces(message: Message):
         sent_message = bot.send_message(message.from_user.id, 'Send photo where you wanna highligth faces')
@@ -70,7 +72,7 @@ def start_bot(
 
 
     # verifing faces
-    @bot.message_handler(func=lambda message: message == "Verify faces🤓🥸")
+    @bot.message_handler(func=lambda message: message.text == "Verify faces🤓🥸")
     @session_waiter(bot, storage)
     def get_verify_base_image(message: Message):
         sent_message = bot.send_message(message.from_user.id, 'Send photo with base face')
@@ -243,8 +245,10 @@ def start_bot(
 
     def main():
         if to_log:
-            info_bot = bot.get_me().to_json()
-            print(f"Starting bot {info_bot['first_name']} with token {token}. https://t.me/{info_bot['username']} | @{info_bot['username']}")
+            info_bot = json.loads(bot.get_me().to_json())
+            first_name = info_bot['first_name']
+            username = info_bot['username']
+            print(f"Starting bot {first_name} with token {token}. https://t.me/{username} | @{username}")
 
         bot.infinity_polling()
 
