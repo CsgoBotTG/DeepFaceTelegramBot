@@ -10,6 +10,7 @@ def main():
         index = argv.index('-token') + 1
         token = argv[index]
     except:
+        print("Didn't find token")
         token = '6637485467:AAFmS9mSSgTQDf8ZrbQQPapJ4neoCAPzBoo'
 
     start_bot(token=token, to_log=True)
