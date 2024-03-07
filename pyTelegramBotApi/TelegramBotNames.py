@@ -37,11 +37,18 @@ segmentation_yolo_models = [
     'yolov8l-seg.pt',
     'yolov8x-seg.pt',
 ]
+pose_yolo_models = [
+    'yolov8n-pose.pt',
+    'yolov8s-pose.pt',
+    'yolov8m-pose.pt',
+    'yolov8l-pose.pt',
+    'yolov8x-pose.pt',
+]
 
 
 text_start_menu = [
     ["Find faces in a photo🔎", "Verify faces🤓🥸", "Analyze face☹️😀"],
-    ["Object detection🕵️", "Segmentation✒️"],
+    ["Object detection🕵️", "Segmentation✒️", "Pose people🧑‍🤝‍🧑"],
     ["Settings⚙️"],
 ]
 start_menu = ReplyKeyboardMarkup()
@@ -52,6 +59,7 @@ text_settings_menu = [
     "Model Neural Network for analyze face",
     "Object Detection Yolo Model",
     "Segmentation Yolo Model",
+    "Pose Yolo Model",
     "Info",
 ]
 settings_menu = quick_markup({i:{'callback_data': i} for i in text_settings_menu})
@@ -63,3 +71,5 @@ deepface_analyze_menu = quick_markup({i:{'callback_data': i} for i in deepface_a
 object_detection_yolo_menu = quick_markup({i:{'callback_data': i} for i in object_detection_yolo_models})
 
 segmentation_yolo_menu = quick_markup({i:{'callback_data': i} for i in segmentation_yolo_models})
+
+pose_yolo_menu = quick_markup({i:{'callback_data': i} for i in pose_yolo_models})

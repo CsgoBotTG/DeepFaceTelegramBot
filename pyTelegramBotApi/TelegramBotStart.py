@@ -26,6 +26,7 @@ def start_bot(
         'detector_backend': detector_backends_models[-1],
         'object_detection_yolo': object_detection_yolo_models[-1],
         'segmentation_yolo': segmentation_yolo_models[-1],
+        'pose_yolo': pose_yolo_models[-1],
         'first_message': True,
         'session': False,
         'image_base': None, # verify
@@ -42,13 +43,14 @@ def start_bot(
             storage['first_message'] = False
 
         bot.send_message(message.from_user.id, 
-                            "My functionality are: " + \
-                            "\n1. DeepFace\n\t\t\t\t1. Find faces in a photo;\n\t\t\t\t" + \
-                            "2. Verify faces several photos;" + \
-                            "\n\t\t\t\t3. Analyze facial emotions;\n" + \
-                            "2. YoloV8\n\t\t\t\t1. Object Detection;\n\t\t\t\t" + \
-                            "2. Segmentation;", 
-                        reply_markup=start_menu)
+                                "My functionality are: " + \
+                                "\n1. DeepFace\n\t\t\t\t1. Find faces in a photo;\n\t\t\t\t" + \
+                                "2. Verify faces several photos;" + \
+                                "\n\t\t\t\t3. Analyze facial emotions;\n" + \
+                                "2. YoloV8\n\t\t\t\t1. Object Detection;\n\t\t\t\t" + \
+                                "2. Segmentation;\n\t\t\t\t" + \
+                                "3. Pose people;", 
+                         reply_markup=start_menu)
     
 
     # find faces
@@ -166,6 +168,25 @@ def start_bot(
             ) # sending results
     
 
+    # pose people
+    @bot.message_handler(func=lambda message: message.text == 'Pose people🧑‍🤝‍🧑')
+    @session_waiter(bot, storage)
+    def get_pose(message: Message):
+        sent_message = bot.send_message(message.from_user.id, 'Send photo with people')
+        bot.register_next_step_handler(sent_message, pose)
+    
+
+    def pose(message: Message):
+        if message.content_type != 'photo': # exception
+            bot.send_message(message.from_user.id, "It isn't photo...")
+        else:
+            telegram_pose_functional(
+                bot=bot,
+                message=message,
+                pose_yolo=storage['pose_yolo']
+            ) # sending_results
+    
+
     # settings menu
     @bot.message_handler(func=lambda message: message.text == 'Settings⚙️')
     @session_waiter(bot, storage)
@@ -183,66 +204,82 @@ def start_bot(
         result_msg += f"\t\t\t[+] <b>Model</b>: {storage['deepface_analyze']}\n"
         result_msg += f"\t\t\t[+] <b>Detector Backend</b>: {storage['detector_backend']}\n"
         result_msg += f"\t\t\t[+] <b>Object Detection Model</b>: {storage['object_detection_yolo']}\n"
-        result_msg += f"\t\t\t[+] <b>Segmentation Model</b>: {storage['segmentation_yolo']}"
-        bot.edit_message_text(result_msg, callback_query.message.from_user.id, callback_query.message.id, parse_mode='HTML')
+        result_msg += f"\t\t\t[+] <b>Segmentation Model</b>: {storage['segmentation_yolo']}\n"
+        result_msg += f"\t\t\t[+] <b>Pose Model</b>: {storage['pose_yolo']}"
+        bot.send_message(callback_query.from_user.id, result_msg, parse_mode='HTML')
 
 
     # choose detector backend
     @bot.callback_query_handler(func=lambda callback_query: callback_query.data == "Detector backend")
     @session_waiter(bot, storage)
     def choose_detector_backend(callback_query: CallbackQuery):
-        bot.edit_message_text('Choose: ', callback_query.message.from_user.id, callback_query.message.id, reply_markup=detector_backend_menu)
+        bot.send_message(callback_query.from_user.id, 'Choose: ', reply_markup=detector_backend_menu)
 
 
     @bot.callback_query_handler(func=lambda callback_query: callback_query.data in detector_backends_models)
     @session_waiter(bot, storage)
     def change_detector_backend(callback_query: CallbackQuery):
         storage['detector_backend'] = callback_query.data
-        bot.edit_message_text(f"Choosed Detector backend: {storage['detector_backend']}", callback_query.message.from_user.id, callback_query.message.id)
+        bot.send_message(callback_query.from_user.id, f"Choosed Detector backend: {storage['detector_backend']}")
 
 
     # choose analyze model
     @bot.callback_query_handler(func=lambda callback_query: callback_query.data == "Model Neural Network for analyze face")
     @session_waiter(bot, storage)
     def choose_deepface_analyze(callback_query: CallbackQuery):
-        bot.edit_message_text('Choose: ', callback_query.message.from_user.id, callback_query.message.id, reply_markup=deepface_analyze_menu)
+        bot.send_message(callback_query.from_user.id, 'Choose: ', reply_markup=deepface_analyze_menu)
 
 
     @bot.callback_query_handler(func=lambda callback_query: callback_query.data in deepface_analyze_models)
     @session_waiter(bot, storage)
     def change_deepface_analyze(callback_query: CallbackQuery):
         storage['deepface_analyze'] = callback_query.data
-        bot.edit_message_text(f"Choosed Model Neural Network for analyze face: {storage['deepface_analyze']}", callback_query.message.from_user.id, callback_query.message.id)
+        bot.send_message(callback_query.from_user.id, f"Choosed Deepface Analyze Model: {storage['deepface_analyze']}")
 
 
     # choose object detection
     @bot.callback_query_handler(func=lambda callback_query: callback_query.data == "Object Detection Yolo Model")
     @session_waiter(bot, storage)
     def choose_object_detection_yolo(callback_query: CallbackQuery):
-        bot.edit_message_text('Choose: ', callback_query.message.from_user.id, callback_query.message.id, reply_markup=object_detection_yolo_menu)
+        bot.send_message(callback_query.from_user.id, 'Choose: ', reply_markup=object_detection_yolo_menu)
 
 
     @bot.callback_query_handler(func=lambda callback_query: callback_query.data in object_detection_yolo_models)
     @session_waiter(bot, storage)
     def change_object_detection_yolo(callback_query: CallbackQuery):
         storage['object_detection_yolo'] = callback_query.data
-        bot.edit_message_text(f"Choosed Object Detection Yolo Model: {storage['object_detection_yolo']}", callback_query.message.from_user.id, callback_query.message.id)
+        bot.send_message(callback_query.from_user.id, f"Choosed Object Detection Model: {storage['object_detection_yolo']}")
     
 
     # choose segmentation
     @bot.callback_query_handler(func=lambda callback_query: callback_query.data == "Segmentation Yolo Model")
     @session_waiter(bot, storage)
     def choose_segmentation_yolo(callback_query: CallbackQuery):
-        bot.edit_message_text('Choose: ', callback_query.message.from_user.id, callback_query.message.id, reply_markup=segmentation_yolo_menu)
+        bot.send_message(callback_query.from_user.id, 'Choose: ', reply_markup=segmentation_yolo_menu)
 
 
     @bot.callback_query_handler(func=lambda callback_query: callback_query.data in segmentation_yolo_models)
     @session_waiter(bot, storage)
     def change_segmentation_yolo(callback_query: CallbackQuery):
         storage['segmentation_yolo'] = callback_query.data
-        bot.edit_message_text(f"Choosed Segmentation Yolo Model: {storage['segmentation_yolo']}", callback_query.message.from_user.id, callback_query.message.id)
+        bot.send_message(callback_query.from_user.id, f"Choosed Segmentation Yolo Model: {storage['segmentation_yolo']}")
+    
+
+    # choose pose
+    @bot.callback_query_handler(func=lambda callback_query: callback_query.data == "Pose Yolo Model")
+    @session_waiter(bot, storage)
+    def choose_pose_yolo(callback_query: CallbackQuery):
+        bot.send_message(callback_query.from_user.id, 'Choose: ', reply_markup=pose_yolo_menu)
 
 
+    @bot.callback_query_handler(func=lambda callback_query: callback_query.data in pose_yolo_models)
+    @session_waiter(bot, storage)
+    def change_pose_yolo(callback_query: CallbackQuery):
+        storage['pose_yolo'] = callback_query.data
+        bot.send_message(callback_query.from_user.id, f"Choosed Pose Yolo Model: {storage['pose_yolo']}")
+    
+
+    # starting bot
     def main():
         if to_log:
             info_bot = json.loads(bot.get_me().to_json())

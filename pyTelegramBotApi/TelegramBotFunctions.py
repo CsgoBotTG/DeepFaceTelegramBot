@@ -181,7 +181,7 @@ def telegram_segmentation_functional(
         segmentation_yolo: str = 'yolov8x-seg.pt'   
     ) -> None:
     """
-    Object detection from message
+    Segmentation from message
 
     :param bot: telebot.Bot. Get bot to download and send
     :param message: telebot.types.Message. Get message for chat_id
@@ -202,4 +202,34 @@ def telegram_segmentation_functional(
     bot.send_message(message.from_user.id, "Highligthing image")
     send_image(bot, message, image, 'Highlitghed Image')
 
+    return None
+
+
+def telegram_pose_functional(
+        bot: TeleBot,
+        message: Message,
+        pose_yolo: str = 'yolov8x-pose.pt'
+    ) -> None:
+    """
+    Pose people from message
+
+    :param bot: telebot.TeleBot. Get bot to download and send
+    :param message: telebot.types.Message. Get message for chat_id
+    :param pose_yolo: str. Yolov8 pose model
+    """
+
+    image = get_image_from_message(bot, message)
+
+    bot.send_message(message.from_user.id, "Got Image")
+    bot.send_message(message.from_user.id, "Starting recognition...")
+
+    if not os.path.exists(models_path + pose_yolo):
+        bot.send_message(message.from_user.id, "Didn't find model. Wait few seconds. Downloading...")
+    
+    _, image = pose_detect_with_highligth(image, pose_yolo)
+
+    bot.send_message(message.from_user.id, "Finished")
+    bot.send_message(message.from_user.id, "Highligthing image")
+    send_image(bot, message, image, 'Highlitghed Image')
+    
     return None
