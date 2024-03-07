@@ -50,7 +50,7 @@ pose_yolo_models = [
 text_start_menu = [
     ["Find faces in a photo🔎", "Verify faces🤓🥸", "Analyze face☹️😀"],
     ["Object detection🕵️", "Segmentation✒️", "Pose people🧑‍🤝‍🧑"],
-    ["Settings⚙️"],
+    ["Settings⚙️", 'Finish Bot👊'],
 ]
 buttons_start_menu = [[KeyboardButton(text=text) for text in list_text] for list_text in text_start_menu]
 start_menu = ReplyKeyboardMarkup(keyboard=buttons_start_menu)

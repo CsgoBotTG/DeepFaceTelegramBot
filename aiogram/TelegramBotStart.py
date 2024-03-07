@@ -295,6 +295,15 @@ def start_bot(
     async def change_pose_yolo(callback_query: CallbackQuery):
         storage['pose_yolo'] = callback_query.data
         await callback_query.message.edit_text(f"Choosed Pose Yolo Model: {storage['pose_yolo']}")
+    
+
+    # finish him!
+    @dp.message(F.text == 'Finish Bot👊')
+    @session_waiter(bot, storage)
+    async def exit(message: Message):
+        await bot.send_message(message.from_user.id, 'Exiting...')
+        print('Exiting...\n\n')
+        await dp.stop_polling()
 
 
     # starting bot
