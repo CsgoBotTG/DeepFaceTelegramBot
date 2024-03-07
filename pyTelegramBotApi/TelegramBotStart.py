@@ -279,7 +279,7 @@ def start_bot(
         bot.send_message(callback_query.from_user.id, f"Choosed Pose Yolo Model: {storage['pose_yolo']}")
     
 
-    # exit
+    # finish him!
     @bot.message_handler(func=lambda message: message.text == "Finish Bot👊")
     @session_waiter(bot, storage)
     def exit(message: Message):
