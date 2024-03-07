@@ -3,7 +3,7 @@
 <h3 align="center">Telegram Bot working with classification, object_detection, segmentation and analizing faces</h3>
 
 
-The bot provides an opportunity to work with people's faces through a neural network using the libraries YOLOv5, TensorFlow, Keras, Deepface, OpenCV2. Recognition accuracy is ~97%.
+The bot provides an opportunity to work with people's faces through a neural network using the libraries YOLOv8, TensorFlow, Keras, Deepface, OpenCV2. Recognition accuracy each model are ~97%.
 
 The functions of this bot:
 1. Deepface
