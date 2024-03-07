@@ -279,6 +279,14 @@ def start_bot(
         bot.send_message(callback_query.from_user.id, f"Choosed Pose Yolo Model: {storage['pose_yolo']}")
     
 
+    # exit
+    @bot.message_handler(func=lambda message: message.text == "Finish Bot👊")
+    @session_waiter(bot, storage)
+    def exit(message: Message):
+        bot.send_message(message.from_user.id, "Exiting...")
+        exit(print('Exiting...\n\n'))
+
+
     # starting bot
     def main():
         if to_log:
@@ -287,7 +295,7 @@ def start_bot(
             username = info_bot['username']
             print(f"Starting bot {first_name} with token {token} (pyTelegramBotApi). https://t.me/{username} | @{username}")
 
-        bot.infinity_polling()
+        bot.polling()
 
     main()
 
