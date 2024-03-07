@@ -188,7 +188,7 @@ async def telegram_segmentation_functional(
 
     :param bot: aiogram.Bot. Get bot to download and send
     :param message: aiogram.types.Message. Get message for chat_id
-    :param segmentation_yolo: str. Yolov8 object detection model
+    :param segmentation_yolo: str. Yolov8 segmentation model
     """
 
     image = await get_image_from_message(bot, message)
@@ -200,6 +200,35 @@ async def telegram_segmentation_functional(
         await bot.send_message(message.from_user.id, "Didn't find model. Wait few seconds. Downloading...")
     
     _, image = segmentation_detect_with_higligth(image, segmentation_yolo)
+
+    await bot.send_message(message.from_user.id, "Finished")
+    await bot.send_message(message.from_user.id, "Highligthing image")
+    send_image(bot, message, image, 'Highlitghed Image')
+    
+    return None
+
+async def telegram_pose_functional(
+        bot: Bot,
+        message: Message,
+        pose_yolo: str = 'yolov8x-pose.pt'
+    ) -> None:
+    """
+    Pose people from message
+
+    :param bot: aiogram.Bot. Get bot to download and send
+    :param message: aiogram.types.Message. Get message for chat_id
+    :param pose_yolo: str. Yolov8 pose model
+    """
+
+    image = await get_image_from_message(bot, message)
+
+    await bot.send_message(message.from_user.id, "Got Image")
+    await bot.send_message(message.from_user.id, "Starting recognition...")
+
+    if not os.path.exists(models_path + pose_yolo):
+        await bot.send_message(message.from_user.id, "Didn't find model. Wait few seconds. Downloading...")
+    
+    _, image = pose_detect_with_highligth(image, pose_yolo)
 
     await bot.send_message(message.from_user.id, "Finished")
     await bot.send_message(message.from_user.id, "Highligthing image")

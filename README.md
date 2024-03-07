@@ -13,6 +13,7 @@ The functions of this bot:
 2. YoloV8
    1. Object detection (persons, animals, cars, food, etc...)
    2. Segmentation (persons, animals, cars, food, etc...)
+   3. Pose people (only in aiogram)
 
 The bot will be controlled using telegram and buttons.
 

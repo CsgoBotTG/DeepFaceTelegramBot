@@ -38,11 +38,18 @@ segmentation_yolo_models = [
     'yolov8l-seg.pt',
     'yolov8x-seg.pt',
 ]
+pose_yolo_models = [
+    'yolov8n-pose.pt',
+    'yolov8s-pose.pt',
+    'yolov8m-pose.pt',
+    'yolov8l-pose.pt',
+    'yolov8x-pose.pt',
+]
 
 
 text_start_menu = [
     ["Find faces in a photo🔎", "Verify faces🤓🥸", "Analyze face☹️😀"],
-    ["Object detection🕵️", "Segmentation✒️"],
+    ["Object detection🕵️", "Segmentation✒️", "Pose people🧑‍🤝‍🧑"],
     ["Settings⚙️"],
 ]
 buttons_start_menu = [[KeyboardButton(text=text) for text in list_text] for list_text in text_start_menu]
@@ -53,6 +60,7 @@ text_settings_menu = [
     ["Model Neural Network for analyze face"],
     ["Object Detection Yolo Model"],
     ["Segmentation Yolo Model"],
+    ["Pose Yolo Model"],
     ["Info"],
 ]
 buttons_settings_menu = [[InlineKeyboardButton(text=text, callback_data=text) for text in list_text] for list_text in text_settings_menu]
@@ -70,6 +78,9 @@ object_detection_yolo_menu = InlineKeyboardMarkup(inline_keyboard=buttons_object
 buttons_segmentation_yolo = [[InlineKeyboardButton(text=text, callback_data=text)] for text in segmentation_yolo_models]
 segmentation_yolo_menu = InlineKeyboardMarkup(inline_keyboard=buttons_segmentation_yolo)
 
+buttons_pose_yolo = [[InlineKeyboardButton(text=text, callback_data=text)] for text in pose_yolo_models]
+pose_yolo_menu = InlineKeyboardMarkup(inline_keyboard=buttons_pose_yolo)
+
 class FindFacesForm(StatesGroup):
     image = State()
 
@@ -84,4 +95,7 @@ class ObjectDetectionYoloForm(StatesGroup):
     image = State()
 
 class SegmentationYoloForm(StatesGroup):
+    image = State()
+
+class PoseYoloForm(StatesGroup):
     image = State()

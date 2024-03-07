@@ -16,6 +16,7 @@ object_detection_yolo_models = [
 ]
 [ultralytics.YOLO(models_path + model + '.pt') for model in object_detection_yolo_models]
 [ultralytics.YOLO(models_path + model + '-seg.pt') for model in object_detection_yolo_models]
+[ultralytics.YOLO(models_path + model + '-pose.pt') for model in object_detection_yolo_models]
 
 from deepface import DeepFace
 
