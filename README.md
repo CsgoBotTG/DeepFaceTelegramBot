@@ -139,3 +139,6 @@ ______
 ### Segmentation
 ![Example](images/Town.jpg)
 ![Example](images/Town_result.jpg)
+### Pose
+![Example](images/pose.jpeg)
+![Example](images/pose_result.jpeg)
