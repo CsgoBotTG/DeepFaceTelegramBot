@@ -7,7 +7,19 @@ from aiogram.types import Message
 from aiogram.fsm.context import FSMContext
 
 
-def session_waiter(bot: Bot, storage: dict):
+def session_waiter(
+        bot: Bot, 
+        storage: dict
+    ):
+    """
+    Waiting for end session
+
+    :param bot: telebot.TeleBot. for sending message if session
+    :param storage: dict. to get session info
+
+    :return: function. wrapper
+    """
+
     def session_waiter_wrapper(func):
         async def wrapper(message: Message):
             if storage['session']:
@@ -20,7 +32,19 @@ def session_waiter(bot: Bot, storage: dict):
     return session_waiter_wrapper
 
 
-def session_waiter_with_state(bot: Bot, storage: dict):
+def session_waiter_with_state(
+        bot: Bot, 
+        storage: dict
+    ):
+    """
+    Waiting for end session
+
+    :param bot: telebot.TeleBot. for sending message if session
+    :param storage: dict. to get session info
+
+    :return: function. wrapper
+    """
+
     def session_waiter_with_state_wrapper(func):
         async def wrapper(message: Message, state: FSMContext):
             if storage['session']:
