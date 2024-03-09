@@ -5,7 +5,6 @@ import requests
 from aiogram import Bot
 from aiogram.types import Message
 from aiogram.fsm.context import FSMContext
-from aiogram.types import InputFile
 
 
 def session_waiter(bot: Bot, storage: dict):

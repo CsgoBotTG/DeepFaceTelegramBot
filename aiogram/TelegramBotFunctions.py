@@ -1,3 +1,5 @@
+from typing import Optional
+
 import os
 import cvzone
 import numpy as np
@@ -12,10 +14,10 @@ from aiogram.enums import ParseMode
 
 
 async def telegram_find_face_functional(
-        bot: Bot, 
-        message: Message, 
-        detector_backend: str = 'yolov8'
-    ) -> None:
+        bot: Optional[Bot], 
+        message: Optional[Message], 
+        detector_backend: Optional[str] = 'yolov8'
+    ) -> Optional[None]:
     """
     Find faces from message.
 
@@ -49,11 +51,11 @@ async def telegram_find_face_functional(
 
 
 async def telegram_verify_faces_functional(
-        bot: Bot, 
-        message: Message, 
-        image_base: np.ndarray, 
-        detector_backend='opencv', 
-        model_name='VGG-Face'
+        bot: Optional[Bot], 
+        message: Optional[Message], 
+        image_base: Optional[np.ndarray], 
+        detector_backend: Optional[str] = 'opencv', 
+        model_name: Optional[str] = 'VGG-Face'
     ) -> None:
     """
     Verifing 2 faces from message
@@ -96,9 +98,9 @@ async def telegram_verify_faces_functional(
 
 
 async def telegram_analyze_face_functional(
-        bot: Bot, 
-        message: Message, 
-        detector_backend='opencv'
+        bot: Optional[Bot], 
+        message: Optional[Message], 
+        detector_backend: Optional[str] = 'opencv'
     ) -> None:
     """
     Analyze face: emotions, age, race, gender from message
@@ -149,9 +151,9 @@ async def telegram_analyze_face_functional(
 
 
 async def telegram_object_detection_functional(
-        bot: Bot, 
-        message: Message, 
-        object_detection_yolo: str
+        bot: Optional[Bot], 
+        message: Optional[Message], 
+        object_detection_yolo: Optional[str]
     ) -> None:
     """
     Object detection from message
@@ -179,9 +181,9 @@ async def telegram_object_detection_functional(
 
 
 async def telegram_segmentation_functional(
-        bot: Bot,
-        message: Message,
-        segmentation_yolo: str = 'yolov8x-seg.pt'   
+        bot: Optional[Bot],
+        message: Optional[Message],
+        segmentation_yolo: Optional[str] = 'yolov8x-seg.pt'   
     ) -> None:
     """
     Object detection from message
@@ -208,9 +210,9 @@ async def telegram_segmentation_functional(
     return None
 
 async def telegram_pose_functional(
-        bot: Bot,
-        message: Message,
-        pose_yolo: str = 'yolov8x-pose.pt'
+        bot: Optional[Bot],
+        message: Optional[Message],
+        pose_yolo: Optional[str] = 'yolov8x-pose.pt'
     ) -> None:
     """
     Pose people from message

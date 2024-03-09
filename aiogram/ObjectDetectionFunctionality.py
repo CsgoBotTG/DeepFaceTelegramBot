@@ -1,3 +1,5 @@
+from typing import Optional, Tuple
+
 import cv2
 import random
 import cvzone
@@ -7,16 +9,16 @@ import ultralytics
 from TelegramBotNames import models_path
 
 def object_detect_with_highligth(
-        image: np.ndarray, 
-        obj_detect_model: str = "yolov8x.pt",
-    ):
+        image: Optional[np.ndarray], 
+        obj_detect_model: Optional[str] = "yolov8x.pt",
+    ) -> Tuple[dict, np.ndarray]:
     """
     Object detection from image
 
     :param image: np.ndarray. Image highligthed
     :param obj_detect_model: str. Path to model of object detection yolov8
 
-    :return: result (list) and highligthed image
+    :return: result (dict) and highligthed image
     """
 
     image_highlighted = image.copy()
@@ -42,16 +44,16 @@ def object_detect_with_highligth(
 
 
 def segmentation_detect_with_higligth(
-        image: np.ndarray,
-        segmentation_model: str = "yolov8x-seg.pt",
-    ):
+        image: Optional[np.ndarray],
+        segmentation_model: Optional[str] = "yolov8x-seg.pt",
+    ) -> Tuple[dict, np.ndarray]:
     """
     Segmentation from image
 
     :param image: np.ndarray. Image highligthed
     :param segmentation_model: str. Path to model of segmentation yolov8
 
-    :return: results (list) and image highlighted
+    :return: results (dict) and image highlighted
     """
 
     image_highlighted = image.copy()
@@ -76,16 +78,16 @@ def segmentation_detect_with_higligth(
 
 
 def pose_detect_with_highligth(
-        image: np.ndarray,
-        pose_model: str = "yolov8x-pose.pt"
-    ) -> None:
+        image: Optional[np.ndarray],
+        pose_model: Optional[np.ndarray] = "yolov8x-pose.pt"
+    ) -> Tuple[dict, np.ndarray]:
     """
     Pose people from image
 
     :param image: np.ndarray. Image highligthed
     :param pose_model: str. Path to model of segmentation yolov8
     
-    :return: results (list) and image highlighted
+    :return: results (dict) and image highlighted
     """
 
     image_highlighted = image.copy()
