@@ -1,3 +1,5 @@
+from typing import Optional
+
 import os
 import cvzone
 import numpy as np
@@ -11,9 +13,9 @@ from telebot.types import Message
 
 
 def telegram_find_face_functional(
-        bot: TeleBot, 
-        message: Message, 
-        detector_backend: str = 'yolov8'
+        bot: Optional[TeleBot], 
+        message: Optional[Message], 
+        detector_backend: Optional[str] = 'yolov8'
     ) -> None:
     """
     Find faces from message.
@@ -47,11 +49,11 @@ def telegram_find_face_functional(
 
 
 def telegram_verify_faces_functional(
-        bot: TeleBot, 
-        message: Message, 
-        image_base: np.ndarray, 
-        detector_backend='opencv', 
-        model_name='VGG-Face'
+        bot: Optional[TeleBot], 
+        message: Optional[Message], 
+        image_base: Optional[np.ndarray], 
+        detector_backend: Optional[str] = 'opencv', 
+        model_name: Optional[str] = 'VGG-Face'
     ) -> None:
     """
     Verifing 2 faces from message
@@ -93,9 +95,9 @@ def telegram_verify_faces_functional(
 
 
 def telegram_analyze_face_functional(
-        bot: TeleBot, 
-        message: Message, 
-        detector_backend='opencv'
+        bot: Optional[TeleBot], 
+        message: Optional[Message], 
+        detector_backend: Optional[str] = 'opencv'
     ) -> None:
     """
     Analyze face: emotions, age, race, gender from message
@@ -146,9 +148,9 @@ def telegram_analyze_face_functional(
 
 
 def telegram_object_detection_functional(
-        bot: TeleBot, 
-        message: Message, 
-        object_detection_yolo: str
+        bot: Optional[TeleBot], 
+        message: Optional[Message], 
+        object_detection_yolo: Optional[str]
     ) -> None:
     """
     Object detection from message
@@ -176,9 +178,9 @@ def telegram_object_detection_functional(
 
 
 def telegram_segmentation_functional(
-        bot: TeleBot,
-        message: Message,
-        segmentation_yolo: str = 'yolov8x-seg.pt'   
+        bot: Optional[TeleBot],
+        message: Optional[Message],
+        segmentation_yolo: Optional[str] = 'yolov8x-seg.pt'   
     ) -> None:
     """
     Segmentation from message
@@ -206,9 +208,9 @@ def telegram_segmentation_functional(
 
 
 def telegram_pose_functional(
-        bot: TeleBot,
-        message: Message,
-        pose_yolo: str = 'yolov8x-pose.pt'
+        bot: Optional[TeleBot],
+        message: Optional[Message],
+        pose_yolo: Optional[str] = 'yolov8x-pose.pt'
     ) -> None:
     """
     Pose people from message
