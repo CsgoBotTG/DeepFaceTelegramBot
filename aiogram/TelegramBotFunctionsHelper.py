@@ -57,7 +57,19 @@ def session_waiter_with_state(
     return session_waiter_with_state_wrapper
 
 
-async def get_image_from_message(bot: Bot, message: Message):
+async def get_image_from_message(
+        bot: Bot, 
+        message: Message
+    ) -> np.ndarray:
+    """
+    Get image from message
+
+    :param: telebot.TeleBot. Bot to get image
+    :param: telebot.types.Messsage. To get image from message
+
+    :return: np.ndarray. Image
+    """
+
     file_id = message.photo[-1].file_id
     file_info = await bot.get_file(file_id)
     file_path = file_info.file_path
@@ -68,7 +80,13 @@ async def get_image_from_message(bot: Bot, message: Message):
     return file
 
 
-def send_image(bot: Bot, message: Message, image: np.ndarray, caption: str = None):
+def send_image(
+        bot: Bot, 
+        message: Message, 
+        image: np.ndarray, 
+        caption: str = None
+    ) -> bool:
+
     image = cv2.imencode('.jpg', image)[1].tostring()
     
     data = {'chat_id': message.from_user.id}
@@ -77,4 +95,5 @@ def send_image(bot: Bot, message: Message, image: np.ndarray, caption: str = Non
     url = f"https://api.telegram.org/bot{bot.token}/sendPhoto"
 
     result = requests.post(url, data=data, files={'photo': image})
-    return result.json()
+    
+    return result.json()['ok']

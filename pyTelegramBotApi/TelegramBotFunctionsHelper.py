@@ -70,4 +70,5 @@ def send_image(
 
     image_bytes = cv2.imencode('.jpg', image)[1].tostring()
     bot.send_photo(message.from_user.id, image_bytes, caption)
+
     return True
