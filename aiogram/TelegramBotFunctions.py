@@ -24,6 +24,8 @@ async def telegram_find_face_functional(
     :param bot: aiogram.Bot. Get bot to download and send images
     :param message: aiogram.types.Message. Get message to get chat_id
     :param detector_backend: str. Used detector backed
+
+    :return: None
     """
 
     image = await get_image_from_message(bot, message)
@@ -65,6 +67,8 @@ async def telegram_verify_faces_functional(
     :param image_base: np.ndarray. image to verify second photo
     :param detector_backend: str. Used detector backend
     :param model_name: str. Used model of NN analizing face
+
+    :return: None
     """
 
     image_verify = await get_image_from_message(bot, message)
@@ -108,6 +112,8 @@ async def telegram_analyze_face_functional(
     :param bot: aiogram.Bot. Get bot to download and send
     :param message: aiogram.types.Message. Get message for chat_id
     :param detector_backend: str. Used detector_backends
+
+    :return: None
     """
 
     image = await get_image_from_message(bot, message)
@@ -161,6 +167,8 @@ async def telegram_object_detection_functional(
     :param bot: aiogram.Bot. Get bot to download and send
     :param message: aiogram.types.Message. Get message for chat_id
     :param object_detection_yolo: str. Yolov8 object detection model
+
+    :return: None
     """
 
     image = await get_image_from_message(bot, message)
@@ -191,6 +199,8 @@ async def telegram_segmentation_functional(
     :param bot: aiogram.Bot. Get bot to download and send
     :param message: aiogram.types.Message. Get message for chat_id
     :param segmentation_yolo: str. Yolov8 segmentation model
+
+    :return: None
     """
 
     image = await get_image_from_message(bot, message)
@@ -220,6 +230,8 @@ async def telegram_pose_functional(
     :param bot: aiogram.Bot. Get bot to download and send
     :param message: aiogram.types.Message. Get message for chat_id
     :param pose_yolo: str. Yolov8 pose model
+
+    :return: None
     """
 
     image = await get_image_from_message(bot, message)
