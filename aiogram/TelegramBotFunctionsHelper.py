@@ -14,7 +14,7 @@ def session_waiter(
     """
     Waiting for end session
 
-    :param bot: telebot.TeleBot. for sending message if session
+    :param bot: aiogram.Bot. for sending message if session
     :param storage: dict. to get session info
 
     :return: function. wrapper
@@ -39,7 +39,7 @@ def session_waiter_with_state(
     """
     Waiting for end session
 
-    :param bot: telebot.TeleBot. for sending message if session
+    :param bot: aiogram.Bot. for sending message if session
     :param storage: dict. to get session info
 
     :return: function. wrapper
@@ -64,8 +64,8 @@ async def get_image_from_message(
     """
     Get image from message
 
-    :param: telebot.TeleBot. Bot to get image
-    :param: telebot.types.Messsage. To get image from message
+    :param bot: aiogram.Bot. Bot to get image
+    :param message: aiogram.types.Messsage. To get image from message
 
     :return: np.ndarray. Image
     """
@@ -86,14 +86,23 @@ def send_image(
         image: np.ndarray, 
         caption: str = None
     ) -> bool:
+    """
+    Send image in return
+
+    :param bot: aiogram.Bot. to send image
+    :param message: aiogram.types.Message. to get chat id
+    :param image: np.ndarray. to send image
+    :param caption: str. caption of string
+
+    :return: bool. Result
+    """
 
     image = cv2.imencode('.jpg', image)[1].tostring()
-    
+    url = f"https://api.telegram.org/bot{bot.token}/sendPhoto"
+
     data = {'chat_id': message.from_user.id}
     if not caption is None:
         data['caption'] = caption
-    url = f"https://api.telegram.org/bot{bot.token}/sendPhoto"
 
     result = requests.post(url, data=data, files={'photo': image})
-    
     return result.json()['ok']
