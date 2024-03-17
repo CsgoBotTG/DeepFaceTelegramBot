@@ -1,9 +1,9 @@
 import cv2
 import numpy as np
-import requests
 
 from aiogram import Bot
 from aiogram.types import Message
+from aiogram.types.input_file import BufferedInputFile
 from aiogram.fsm.context import FSMContext
 
 
@@ -80,29 +80,24 @@ async def get_image_from_message(
     return file
 
 
-def send_image(
-        bot: Bot, 
-        message: Message, 
-        image: np.ndarray, 
+async def send_image(
+        bot: Bot,
+        message: Message,
+        image: np.ndarray,
         caption: str = None
-    ) -> bool:
+    ):
     """
-    Send image in return
+    Send image
 
-    :param bot: aiogram.Bot. to send image
-    :param message: aiogram.types.Message. to get chat id
-    :param image: np.ndarray. to send image
-    :param caption: str. caption of string
+    :param bot: aiogram.Bot. Bot to get image
+    :param message: aiogram.types.Messsage. To get chat id
+    :param image: np.ndarray. Image what sent
+    :param caption: str | None. String with image sended
 
-    :return: bool. Result
+    :raturn: None
     """
 
-    image = cv2.imencode('.jpg', image)[1].tostring()
-    url = f"https://api.telegram.org/bot{bot.token}/sendPhoto"
+    _, image_bytes = cv2.imencode('.jpg', image)
+    image_to_send = BufferedInputFile(image_bytes.tobytes(), 'image.jpg')
 
-    data = {'chat_id': message.from_user.id}
-    if not caption is None:
-        data['caption'] = caption
-
-    result = requests.post(url, data=data, files={'photo': image})
-    return result.json()['ok']
+    await bot.send_photo(message.from_user.id, image_to_send, caption=caption)

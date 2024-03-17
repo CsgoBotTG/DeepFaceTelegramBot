@@ -5,15 +5,15 @@ from aiogram.fsm.state import State, StatesGroup
 models_path = r'../../weightsYolo/'
 
 deepface_analyze_models = [
-  "VGG-Face", 
-  "Facenet", 
-  "Facenet512", 
-  "OpenFace", 
-  "DeepFace", 
-  "DeepID", 
-  "ArcFace", 
-  "Dlib", 
-  "SFace",
+    "VGG-Face", 
+    "Facenet", 
+    "Facenet512", 
+    "OpenFace", 
+    "DeepFace", 
+    "DeepID", 
+    "ArcFace", 
+    "Dlib", 
+    "SFace",
 ]
 detector_backends_models = [
     'opencv', 
